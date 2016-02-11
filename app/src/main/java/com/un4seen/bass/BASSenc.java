@@ -120,8 +120,8 @@ public class BASSenc {
 
     public interface ENCODERPROC {
         int ENCODERPROC(int handle, int channel, ByteBuffer buffer, int length, int maxout, Object user);
-		/* Encoder callback function.
-		handle : The encoder
+        /* Encoder callback function.
+        handle : The encoder
 		channel: The channel handle
 		buffer : Buffer containing the PCM data (input) and receiving the encoded data (output)
 		length : Number of bytes in (-1=closing)

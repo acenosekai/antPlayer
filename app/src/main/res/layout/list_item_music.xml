@@ -41,9 +41,9 @@
 
                 <LinearLayout
                     android:id="@+id/list_text_desc_container"
-                    android:layout_toLeftOf="@+id/list_text_desc_length_container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/list_text_desc_length_container">
 
                     <TextView
                         android:id="@+id/list_text_desc"
@@ -61,17 +61,17 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_alignParentRight="true"
                     android:id="@+id/list_text_desc_length_container"
-                    android:orientation="vertical"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:gravity="end"
                         android:id="@+id/list_text_length"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="end"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"

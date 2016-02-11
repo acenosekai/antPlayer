@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.acenosekai.antplayer.App;
-import com.acenosekai.antplayer.MainActivity;
 import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.ant.ExtendedSeekBar;
 import com.acenosekai.antplayer.ant.SquareImageView;

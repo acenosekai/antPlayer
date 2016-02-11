@@ -28,12 +28,6 @@ public class NowPlayingFragment extends BaseFragment {
     private SeekBar playbackSeekBar;
     private View fragmentView;
 
-    private boolean showAndPlay = false;
-
-    public void setShowAndPlay(boolean showAndPlay) {
-        this.showAndPlay = showAndPlay;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_now_playing, container, false);
@@ -41,54 +35,6 @@ public class NowPlayingFragment extends BaseFragment {
         musicCover.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.cdcover));
         playbackSeekBar = (SeekBar) fragmentView.findViewById(R.id.playback_seek_bar);
 
-        getMainActivity().getPlaybackService().setOnInit(new PlaybackService.OnInit() {
-            @Override
-            public void onInit(Music music) {
-                ((TextView) fragmentView.findViewById(R.id.now_playing_music_title)).setText(music.getTitle());
-                ((TextView) fragmentView.findViewById(R.id.now_playing_music_desc)).setText(music.getArtist() + "-" + music.getAlbum());
-                String timeStr = Utility.secondsToString(music.getLength());
-                if (timeStr.startsWith("00:")) {
-                    timeStr = timeStr.substring(3, timeStr.length());
-                }
-                ((TextView) fragmentView.findViewById(R.id.position_total_text)).setText(timeStr);
-
-
-                refreshPlayButton(getMainActivity().getPlaybackService().isPlaying());
-                refreshShuffleButton(getMainActivity().getPlaybackService().isShuffle());
-                refreshRepeatButton(Integer.parseInt(getMainActivity().getPlaybackService().getRepeat()));
-                if (showAndPlay) {
-                    if (getMainActivity().getPlaybackService().isPlaying()) {
-                        getMainActivity().getPlaybackService().stop();
-                    }
-                    getMainActivity().getPlaybackService().play(0);
-                    showAndPlay = false;
-                }
-            }
-        });
-
-
-        getMainActivity().getPlaybackService().setOnPlayingRun(new PlaybackService.OnPlayingRun() {
-            @Override
-            public void onPlayingRun(Music music) {
-                ((TextView) fragmentView.findViewById(R.id.position_text)).setText(getMainActivity().getPlaybackService().getPositionTime());
-
-                if (extSeekBar == null) {
-                    generateSeekBar();
-                }
-
-                if (!extSeekBar.getSeekBar().isFocused()) {
-                    extSeekBar.setValue(getMainActivity().getPlaybackService().getBytesPosition());
-                }
-            }
-        });
-
-        getMainActivity().getPlaybackService().setOnShuffleChange(new PlaybackService.OnShuffleChange() {
-            @Override
-            public void onShuffleChange(boolean shuffle) {
-                refreshShuffleButton(shuffle);
-
-            }
-        });
 
 
         fragmentView.findViewById(R.id.playback_shuffle).setOnClickListener(new View.OnClickListener() {
@@ -98,16 +44,6 @@ public class NowPlayingFragment extends BaseFragment {
                     getMainActivity().getPlaybackService().setShuffle(false);
                 } else {
                     getMainActivity().getPlaybackService().setShuffle(true);
-                }
-            }
-        });
-
-        getMainActivity().getPlaybackService().setOnPlayingStatusChange(new PlaybackService.OnPlayingStatusChange() {
-            @Override
-            public void onPlayingStatusChanged(boolean playing) {
-                refreshPlayButton(playing);
-                if (playing) {
-                    generateSeekBar();
                 }
             }
         });
@@ -138,17 +74,10 @@ public class NowPlayingFragment extends BaseFragment {
                         break;
 
                 }
-                //refreshRepeatButton(0);
             }
 
         });
 
-        getMainActivity().getPlaybackService().setOnRepeatChange(new PlaybackService.OnRepeatChange() {
-            @Override
-            public void onRepeatChange(String repeat) {
-                refreshRepeatButton(Integer.parseInt(repeat));
-            }
-        });
 
         fragmentView.findViewById(R.id.playback_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,63 +92,123 @@ public class NowPlayingFragment extends BaseFragment {
                 getMainActivity().getPlaybackService().previous();
             }
         });
-
-
-        getMainActivity().getPlaybackService().generateList();
-        getMainActivity().getPlaybackService().init();
-
+        onPlaybackInit(getMainActivity().getPlaybackService().getMusic());
 
         return fragmentView;
     }
 
     private void generateSeekBar() {
-        total = getMainActivity().getPlaybackService().getBytesTotal();
-        extSeekBar = new ExtendedSeekBar(playbackSeekBar, 0, total, (int) total);
+        if(fragmentView !=null) {
+            total = getMainActivity().getPlaybackService().getBytesTotal();
+            extSeekBar = new ExtendedSeekBar(playbackSeekBar, 0, total, (int) total);
 
-        extSeekBar.setOnExtendedSeekBarChangeListener(new ExtendedSeekBar.OnExtendedSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, float value, boolean fromUser) {
-                if (fromUser) {
-                    getMainActivity().getPlaybackService().setBytesPosition((long) value);
+            extSeekBar.setOnExtendedSeekBarChangeListener(new ExtendedSeekBar.OnExtendedSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, float value, boolean fromUser) {
+                    if (fromUser) {
+                        getMainActivity().getPlaybackService().setBytesPosition((long) value);
+                    }
                 }
-            }
-        });
+            });
+        }
 
     }
 
     private void refreshShuffleButton(boolean shuffle) {
-        if (shuffle) {
-            ((IconicsImageView) fragmentView.findViewById(R.id.playback_shuffle)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
-        } else {
-            ((IconicsImageView) fragmentView.findViewById(R.id.playback_shuffle)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorSemiTransparentWhite));
+        if(fragmentView !=null) {
+            if (shuffle) {
+                ((IconicsImageView) fragmentView.findViewById(R.id.playback_shuffle)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
+            } else {
+                ((IconicsImageView) fragmentView.findViewById(R.id.playback_shuffle)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorSemiTransparentWhite));
+            }
         }
     }
 
     private void refreshPlayButton(boolean playing) {
-        if (playing) {
-            ((IconicsImageView) fragmentView.findViewById(R.id.playback_play)).setIcon(CommunityMaterial.Icon.cmd_pause_circle);
-        } else {
-            ((IconicsImageView) fragmentView.findViewById(R.id.playback_play)).setIcon(CommunityMaterial.Icon.cmd_play_circle);
+        if(fragmentView !=null) {
+            if (playing) {
+                ((IconicsImageView) fragmentView.findViewById(R.id.playback_play)).setIcon(CommunityMaterial.Icon.cmd_pause_circle);
+            } else {
+                ((IconicsImageView) fragmentView.findViewById(R.id.playback_play)).setIcon(CommunityMaterial.Icon.cmd_play_circle);
+            }
         }
     }
 
     private void refreshRepeatButton(int repeat) {
-        switch (repeat) {
-            case App.REPEAT.NO_REPEAT:
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat);
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorSemiTransparentWhite));
-                break;
-            case App.REPEAT.REPEAT_ALL:
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat);
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
-                break;
-            case App.REPEAT.REPEAT_ONE:
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat_once);
-                ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
-                break;
+        if(fragmentView !=null) {
+            switch (repeat) {
+                case App.REPEAT.NO_REPEAT:
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat);
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorSemiTransparentWhite));
+                    break;
+                case App.REPEAT.REPEAT_ALL:
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat);
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
+                    break;
+                case App.REPEAT.REPEAT_ONE:
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setIcon(CommunityMaterial.Icon.cmd_repeat_once);
+                    ((IconicsImageView) fragmentView.findViewById(R.id.playback_repeat)).setColor(ContextCompat.getColor(getMainActivity(), R.color.colorText));
+                    break;
+            }
         }
 
 
+    }
+
+
+    @Override
+    public void onPlaybackInit(Music music) {
+        super.onPlaybackInit(music);
+        if(fragmentView !=null) {
+            ((TextView) fragmentView.findViewById(R.id.now_playing_music_title)).setText(music.getTitle());
+            ((TextView) fragmentView.findViewById(R.id.now_playing_music_desc)).setText(music.getArtist() + "-" + music.getAlbum());
+            String timeStr = Utility.secondsToString(music.getLength());
+            if (timeStr.startsWith("00:")) {
+                timeStr = timeStr.substring(3, timeStr.length());
+            }
+            ((TextView) fragmentView.findViewById(R.id.position_total_text)).setText(timeStr);
+
+
+            refreshPlayButton(getMainActivity().getPlaybackService().isPlaying());
+            refreshShuffleButton(getMainActivity().getPlaybackService().isShuffle());
+            refreshRepeatButton(Integer.parseInt(getMainActivity().getPlaybackService().getRepeat()));
+        }
+
+    }
+
+    @Override
+    public void onPlaybackPlayingRun(Music music) {
+        super.onPlaybackPlayingRun(music);
+        if(fragmentView !=null) {
+            ((TextView) fragmentView.findViewById(R.id.position_text)).setText(getMainActivity().getPlaybackService().getPositionTime());
+            if (extSeekBar == null) {
+                generateSeekBar();
+            }
+            if (!extSeekBar.getSeekBar().isFocused()) {
+                extSeekBar.setValue(getMainActivity().getPlaybackService().getBytesPosition());
+            }
+        }
+    }
+
+    @Override
+    public void onPlaybackShuffleChange(boolean shuffle) {
+        super.onPlaybackShuffleChange(shuffle);
+        refreshShuffleButton(shuffle);
+    }
+
+    @Override
+    public void onPlaybackPlayingStatusChange(boolean playing) {
+        super.onPlaybackPlayingStatusChange(playing);
+        refreshPlayButton(playing);
+        if (playing) {
+            generateSeekBar();
+        }
+    }
+
+    @Override
+    public void onPlaybackRepeatChange(String repeat) {
+        super.onPlaybackRepeatChange(repeat);
+        refreshRepeatButton(Integer.parseInt(repeat));
     }
 
 }

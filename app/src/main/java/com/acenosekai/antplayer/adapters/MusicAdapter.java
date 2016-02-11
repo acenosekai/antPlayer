@@ -73,12 +73,23 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicItemHolder> {
                 app.setRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(music)));
                 p.getMusicFileList().addAll(musicList);
                 app.getRealm().copyToRealmOrUpdate(p);
-
+                app.getRealm().commitTransaction();
                 NowPlayingFragment npf = new NowPlayingFragment();
-                npf.setShowAndPlay(true);
+//                npf.setShowAndPlay(true);
+
+
+                if (mainActivity.getPlaybackService().isPlaying()) {
+                    mainActivity.getPlaybackService().stop();
+                }
+                mainActivity.getPlaybackService().generateList();
+                mainActivity.getPlaybackService().init();
+
+
+                mainActivity.getPlaybackService().play(0);
+
                 mainActivity.changePage(npf);
 
-                app.getRealm().commitTransaction();
+
 
             }
         });

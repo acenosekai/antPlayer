@@ -6,6 +6,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.acenosekai.antplayer.App;
 import com.acenosekai.antplayer.MainActivity;
+import com.acenosekai.antplayer.realms.Music;
 
 /**
  * Created by Acenosekai on 1/16/2016.
@@ -16,6 +17,21 @@ public class BaseFragment extends Fragment {
     private App app;
 
     private BaseFragment backFragment;
+
+    public void onPlaybackInit(Music music) {
+    }
+
+    public void onPlaybackPlayingRun(Music music) {
+    }
+
+    public void onPlaybackShuffleChange(boolean shuffle) {
+    }
+
+    public void onPlaybackPlayingStatusChange(boolean playing) {
+    }
+
+    public void onPlaybackRepeatChange(String repeat) {
+    }
 
     public BaseFragment getBackFragment() {
         if (backFragment == null) {

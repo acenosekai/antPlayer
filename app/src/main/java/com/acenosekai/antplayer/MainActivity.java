@@ -41,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             playbackService = ((PlaybackService.PlaybackServiceBinder) binder).getService();
-
             changePage(getInitialFragment());
-
             PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.fragment_files_title);
             SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName(R.string.fragment_library_title);
             SecondaryDrawerItem item3 = new SecondaryDrawerItem().withName(R.string.fragment_now_playing_title);
@@ -74,6 +72,44 @@ public class MainActivity extends AppCompatActivity {
                         }
                     })
                     .build();
+            playbackService.setOnInit(new PlaybackService.OnInit() {
+                @Override
+                public void onInit(Music music) {
+                    currentFragment.onPlaybackInit(music);
+                }
+            });
+
+            playbackService.setOnPlayingRun(new PlaybackService.OnPlayingRun() {
+                @Override
+                public void onPlayingRun(Music music) {
+                    currentFragment.onPlaybackPlayingRun(music);
+                }
+            });
+
+            playbackService.setOnShuffleChange(new PlaybackService.OnShuffleChange() {
+                @Override
+                public void onShuffleChange(boolean shuffle) {
+                    currentFragment.onPlaybackShuffleChange(shuffle);
+
+                }
+            });
+
+            playbackService.setOnPlayingStatusChange(new PlaybackService.OnPlayingStatusChange() {
+                @Override
+                public void onPlayingStatusChanged(boolean playing) {
+                    currentFragment.onPlaybackPlayingStatusChange(playing);
+                }
+            });
+
+            playbackService.setOnRepeatChange(new PlaybackService.OnRepeatChange() {
+                @Override
+                public void onRepeatChange(String repeat) {
+                    currentFragment.onPlaybackRepeatChange(repeat);
+                }
+            });
+
+            playbackService.generateList();
+            playbackService.init();
         }
 
         @Override
@@ -200,12 +236,23 @@ public class MainActivity extends AppCompatActivity {
                                 ((App) getApplication()).setRegistry(App.REGISTRY.SONG_POSITION, "0");
                                 p.getMusicFileList().addAll(musics);
                                 ((App) getApplication()).getRealm().copyToRealmOrUpdate(p);
-
+                                ((App) getApplication()).getRealm().commitTransaction();
                                 NowPlayingFragment npf = new NowPlayingFragment();
-                                npf.setShowAndPlay(true);
+//                                npf.setShowAndPlay(true);
+                                //                npf.setShowAndPlay(true);
+
+
+                                if (getPlaybackService().isPlaying()) {
+                                    getPlaybackService().stop();
+                                }
+                                getPlaybackService().generateList();
+                                getPlaybackService().init();
+
+                                getPlaybackService().play(0);
                                 changePage(npf);
 
-                                ((App) getApplication()).getRealm().commitTransaction();
+
+
                                 break;
                             case 1:
                                 break;

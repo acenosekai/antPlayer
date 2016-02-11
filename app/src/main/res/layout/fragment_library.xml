@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar style="@style/AppTheme.Toolbar">
+
+        <include layout="@layout/toolbar_icon_drawer_open" />
+
+        <TextView
+            style="@style/AppTheme.ToolbarTitle"
+            android:text="@string/fragment_library_title" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/add_folder"
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-plus-circle-outline" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/reload"
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-reload" />
+    </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/content_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

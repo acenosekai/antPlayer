@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AppTheme.Toolbar">
+
+        <include layout="@layout/toolbar_icon_drawer_open" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/AppTheme.ToolbarTitle"
+            android:text="@string/fragment_files_title" />
+
+        <EditText
+            android:id="@+id/search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="100dp"
+            android:singleLine="true"
+            android:visibility="gone" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-dots-vertical" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            android:id="@+id/search_toggle"
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-magnify" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/files_tab_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:orientation="horizontal"
+        android:paddingTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/fragment_files_artists"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-account" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="@string/fragment_files_artists" />
+        </LinearLayout>
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <LinearLayout
+            android:id="@+id/fragment_files_albums"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-library-music" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="@string/fragment_files_albums" />
+        </LinearLayout>
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <LinearLayout
+            android:id="@+id/fragment_files_musics"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-music-note" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="@string/fragment_files_musics" />
+        </LinearLayout>
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <LinearLayout
+            android:id="@+id/fragment_files_folders"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-folder" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="@string/fragment_files_folders" />
+        </LinearLayout>
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <LinearLayout
+            android:id="@+id/fragment_files_playlist"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-playlist-play" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="@string/fragment_files_playlist" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tab_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/files_tab_container"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+
+        <LinearLayout style="@style/AppTheme.FilesTab">
+
+            <View
+                android:id="@+id/fragment_files_artists_bot"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <View
+            style="@style/AppTheme.verticalDivider"
+            android:background="@color/colorTransparent" />
+
+        <LinearLayout style="@style/AppTheme.FilesTab">
+
+            <View
+                android:id="@+id/fragment_files_albums_bot"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <View
+            style="@style/AppTheme.verticalDivider"
+            android:background="@color/colorTransparent" />
+
+        <LinearLayout style="@style/AppTheme.FilesTab">
+
+            <View
+                android:id="@+id/fragment_files_musics_bot"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <View
+            style="@style/AppTheme.verticalDivider"
+            android:background="@color/colorTransparent" />
+
+        <LinearLayout style="@style/AppTheme.FilesTab">
+
+            <View
+                android:id="@+id/fragment_files_folders_bot"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <View
+            style="@style/AppTheme.verticalDivider"
+            android:background="@color/colorTransparent" />
+
+        <LinearLayout style="@style/AppTheme.FilesTab">
+
+            <View
+                android:id="@+id/fragment_files_playlist_bot"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/colorPrimary"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/files_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tab_divider" />
+
+</RelativeLayout>

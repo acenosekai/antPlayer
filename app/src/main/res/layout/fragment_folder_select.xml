@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AppTheme.Toolbar">
+
+        <include layout="@layout/toolbar_icon_back" />
+
+        <TextView
+            style="@style/AppTheme.ToolbarTitle"
+            android:text="@string/fragment_folder_select_title" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/filesTabContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/folder_up"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-arrow-up" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="Up" />
+        </LinearLayout>
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="0.6"-->
+        <!--android:orientation="vertical">-->
+
+        <TextView
+            android:id="@+id/selected_folder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.6"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:text="/folder/wa"
+            android:textSize="18sp" />
+
+        <View style="@style/AppTheme.verticalDivider" />
+
+        <LinearLayout
+            android:id="@+id/select_folder"
+            style="@style/AppTheme.FilesTab">
+
+            <com.mikepenz.iconics.view.IconicsImageView
+                style="@style/AppTheme.FilesTabIcon"
+                app:iiv_icon="cmd-check" />
+
+            <TextView
+                style="@style/AppTheme.FilesTabText"
+                android:text="Select" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/content_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

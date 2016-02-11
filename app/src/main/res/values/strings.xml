@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">antPlayer</string>
+    <string name="fragment_library_title">Library</string>
+    <string name="fragment_files_title">Music</string>
+    <string name="Cancel">Cancel</string>
+    <string name="OK">OK</string>
+    <string name="songs">song(s)</string>
+    <string name="fragment_folder_select_title">Select Folder</string>
+    <string name="unknown_artist">Unknown Artist</string>
+    <string name="unknown_album">Unknown Album</string>
+    <string name="unknown_genre">Undefined</string>
+    <string name="unknown">Unknown</string>
+    <string name="fragment_files_albums">Albums</string>
+    <string name="fragment_files_artists">Artists</string>
+    <string name="fragment_files_musics">Musics</string>
+    <string name="fragment_files_folders">Folders</string>
+    <string name="fragment_files_playlist">Playlist</string>
+    <string name="root_folder">library</string>
+    <string name="fragment_now_playing_title">Now Playing</string>
+
+    <string-array name="files_menu">
+        <item>Play</item>
+        <item>Add To Playlist</item>
+    </string-array>
+
+    <string-array name="files_menu_playlist">
+        <item>Current Playlist</item>
+        <item>New</item>
+        <item>Select Playlist</item>
+    </string-array>
+</resources>

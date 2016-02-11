@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AppTheme.Toolbar">
+
+        <include layout="@layout/toolbar_icon_drawer_open" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/AppTheme.ToolbarTitle"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingEnd="100dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="100dp"
+            android:paddingStart="0dp"
+            android:singleLine="true"
+            android:text="@string/fragment_files_title" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-dots-vertical" />
+
+        <com.mikepenz.iconics.view.IconicsImageView
+            style="@style/AppTheme.ToolbarIconLeft"
+            app:iiv_icon="cmd-magnify" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <include
+        layout="@layout/fragment_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar" />
+
+</RelativeLayout>

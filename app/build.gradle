@@ -35,4 +35,5 @@ dependencies {
         transitive = true
     }
     compile 'io.realm:realm-android:0.84.1'
+    compile project(":libs:AntIcon")
 }

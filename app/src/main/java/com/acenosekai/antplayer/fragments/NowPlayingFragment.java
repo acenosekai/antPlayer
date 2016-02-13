@@ -1,5 +1,7 @@
 package com.acenosekai.antplayer.fragments;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -14,7 +16,6 @@ import com.acenosekai.antplayer.ant.ExtendedSeekBar;
 import com.acenosekai.antplayer.ant.SquareImageView;
 import com.acenosekai.antplayer.ant.Utility;
 import com.acenosekai.antplayer.realms.Music;
-import com.acenosekai.antplayer.services.PlaybackService;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.view.IconicsImageView;
 
@@ -32,7 +33,7 @@ public class NowPlayingFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_now_playing, container, false);
         SquareImageView musicCover = ((SquareImageView) fragmentView.findViewById(R.id.music_cover));
-        musicCover.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.cdcover));
+        musicCover.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.free_cover));
         playbackSeekBar = (SeekBar) fragmentView.findViewById(R.id.playback_seek_bar);
 
 

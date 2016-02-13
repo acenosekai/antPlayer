@@ -1,0 +1,1 @@
+-keep class com.mikepenz.anticon_typeface_library.AntIcon { *; }

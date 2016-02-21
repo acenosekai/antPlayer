@@ -1,11 +1,13 @@
 # antPlayer
-An android music player based on BASS Audio Library. This application can play music with lower latency than the default Android music player. File types supported by this application is also much more.
+An android music player based on BASS Audio Library. This application can play music with lower latency than the default Android music player. File types supported by this application is also much more. Its also play currently the best music file type DSD file (DFF,DSF).
 
 # Supported File Type
-| - MP3 | - MP4|
-| - M4A | - AAC|
-| - FLAC| - OGG|
-
+- MP3
+- MP4
+- M4A
+- AAC
+- FLAC
+- OGG
 - WAV
 - AIFF
 - APE
@@ -19,6 +21,32 @@ An android music player based on BASS Audio Library. This application can play m
 - MP+
 - TTA
 
+#Features
+- Generic Playback (play, next, prev)
+- Now Playing
+- Now Playing List (not implemented yet)
+- Shuffle
+- CrossFade (not yet implemented)
+- Repeat (Repeat one, Repeat all, No repeat)
+- File Browser
+    - By Artist
+    - By Album
+    - By Music (all files)
+    - By Directory
+- Play music by artist
+- play music by album
+- play all music
+- Search music (search by artist, album, and music)
+- Playlist (Not implemented yet)
+- DSP (All DSP effect are not implemented yet)
+    - Amplification
+    - 10 Parametric Equalizer
+    - FreeVerb
+    - Dynamic Amp
+    - Compressor
+- Library (ok)
+- Output setting (setting latency,src, sample rate dll ==> not implemented yet)
+    
 License
 ========
 BASS audio library has their own license. visit http://www.un4seen.com/ for more information.

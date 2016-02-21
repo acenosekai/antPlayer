@@ -1,7 +1,7 @@
 package com.acenosekai.antplayer.fragments;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -15,7 +15,9 @@ import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.ant.ExtendedSeekBar;
 import com.acenosekai.antplayer.ant.SquareImageView;
 import com.acenosekai.antplayer.ant.Utility;
+import com.acenosekai.antplayer.realms.Cover;
 import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.repo.CoverRepo;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.iconics.view.IconicsImageView;
 
@@ -32,8 +34,6 @@ public class NowPlayingFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_now_playing, container, false);
-        SquareImageView musicCover = ((SquareImageView) fragmentView.findViewById(R.id.music_cover));
-        musicCover.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.free_cover));
         playbackSeekBar = (SeekBar) fragmentView.findViewById(R.id.playback_seek_bar);
 
 
@@ -73,12 +73,10 @@ public class NowPlayingFragment extends BaseFragment {
                     case App.REPEAT.REPEAT_ONE:
                         getMainActivity().getPlaybackService().setRepeat(String.valueOf(App.REPEAT.NO_REPEAT));
                         break;
-
                 }
             }
 
         });
-
 
         fragmentView.findViewById(R.id.playback_next).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +110,6 @@ public class NowPlayingFragment extends BaseFragment {
                 }
             });
         }
-
     }
 
     private void refreshShuffleButton(boolean shuffle) {
@@ -152,8 +149,6 @@ public class NowPlayingFragment extends BaseFragment {
                     break;
             }
         }
-
-
     }
 
 
@@ -163,18 +158,26 @@ public class NowPlayingFragment extends BaseFragment {
         if(fragmentView !=null) {
             ((TextView) fragmentView.findViewById(R.id.now_playing_music_title)).setText(music.getTitle());
             ((TextView) fragmentView.findViewById(R.id.now_playing_music_desc)).setText(music.getArtist() + "-" + music.getAlbum());
+
+            SquareImageView musicCover = ((SquareImageView) fragmentView.findViewById(R.id.music_cover));
+
+            Cover c = new CoverRepo(getApp().getRealm()).findOneCoverByAlbumKey(music.getAlbumKey());
+            if (c.getCover() != null) {
+                Bitmap bitMapCover = BitmapFactory.decodeByteArray(c.getCover(), 0, c.getCover().length);
+                musicCover.setImageBitmap(bitMapCover);
+            } else {
+                musicCover.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.free_cover));
+            }
             String timeStr = Utility.secondsToString(music.getLength());
             if (timeStr.startsWith("00:")) {
                 timeStr = timeStr.substring(3, timeStr.length());
             }
             ((TextView) fragmentView.findViewById(R.id.position_total_text)).setText(timeStr);
 
-
             refreshPlayButton(getMainActivity().getPlaybackService().isPlaying());
             refreshShuffleButton(getMainActivity().getPlaybackService().isShuffle());
             refreshRepeatButton(Integer.parseInt(getMainActivity().getPlaybackService().getRepeat()));
         }
-
     }
 
     @Override

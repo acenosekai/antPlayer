@@ -1,6 +1,9 @@
 # antPlayer
 An android music player based on BASS Audio Library. This application can play music with lower latency than the default Android music player and lower latency mean more accurate. File types supported by this application is also much more. Its also play currently the best music file type DSD file (DFF,DSF).
 
+# Screenshot
+<img src="http://i.imgur.com/z4ukgKg.jpg" width=761>
+
 # Supported File Type
 - MP3
 - MP4

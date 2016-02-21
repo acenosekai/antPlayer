@@ -20,6 +20,7 @@ import com.acenosekai.antplayer.fragments.LibraryFragment;
 import com.acenosekai.antplayer.fragments.NowPlayingFragment;
 import com.acenosekai.antplayer.realms.Music;
 import com.acenosekai.antplayer.realms.Playlist;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 import com.acenosekai.antplayer.services.PlaybackService;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             playbackService = ((PlaybackService.PlaybackServiceBinder) binder).getService();
-            changePage(getInitialFragment());
             PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.fragment_files_title);
             SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName(R.string.fragment_library_title);
             SecondaryDrawerItem item3 = new SecondaryDrawerItem().withName(R.string.fragment_now_playing_title);
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     })
                     .build();
+
             playbackService.setOnInit(new PlaybackService.OnInit() {
                 @Override
                 public void onInit(Music music) {
@@ -108,8 +109,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            playbackService.generateList();
-            playbackService.init();
+            if (new MusicRepo(((App) getApplication()).getRealm()).countMusic() > 0) {
+                changePage(getInitialFragment());
+
+                playbackService.generateList();
+                playbackService.init();
+            } else {
+                changePage(new LibraryFragment());
+            }
+
+
         }
 
         @Override
@@ -126,9 +135,7 @@ public class MainActivity extends AppCompatActivity {
     public BaseFragment getInitialFragment() {
         try {
             return initialFragmentClass.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
@@ -156,7 +163,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void forceChangePage(BaseFragment fragment) {
-
+        //LoadingFragment
+        if (new MusicRepo(((App) getApplication()).getRealm()).countMusic() == 0
+                && !fragment.getClass().getSimpleName().equals("FolderSelectFragment")
+                && !fragment.getClass().getSimpleName().equals("LoadingFragment")
+                ) {
+            Toast.makeText(this, "No music file registered. Please Add files to library", Toast.LENGTH_SHORT).show();
+            fragment = new LibraryFragment();
+        }
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -250,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 getPlaybackService().play(0);
                                 changePage(npf);
-
 
 
                                 break;

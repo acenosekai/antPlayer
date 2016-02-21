@@ -42,17 +42,6 @@
             android:layout_marginBottom="20dp"
             android:background="#FFFFFFFF" />
 
-        <!--<com.mikepenz.iconics.view.IconicsImageView-->
-        <!--android:id="@+id/music_cover_mask"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--app:iiv_color="@color/colorPrimary"-->
-        <!--app:iiv_icon="ant-cdOutlinesvg" />-->
-
-
-
     </RelativeLayout>
 
     <LinearLayout

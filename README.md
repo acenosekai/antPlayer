@@ -2,7 +2,7 @@
 An android music player based on <a href="http://www.un4seen.com/">BASS Audio Library</a>. This application can play music with lower latency than the default Android music player and lower latency mean more accurate. File types supported by this application is also much more. Its also play currently best digital music file DSD(DFF,DSF).
 
 # How To Use
-antPlayer is not even in alpha stage. If you insist to try this app you need to clone and build it with android studio. If you have any problem please submit an issue. Good luck.
+antPlayer is not even in alpha stage but I already use this as my regular music player. If you insist to try this app you need to clone and build it with android studio. If you have any problem please submit an issue. Good luck.
 
 # Screenshot
 <img src="http://i.imgur.com/z4ukgKg.jpg" width=761>

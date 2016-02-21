@@ -2,9 +2,8 @@
 An android music player based on BASS Audio Library. This application can play music with lower latency than the default Android music player. File types supported by this application is also much more.
 
 # Supported File Type
-|||---|||
-- MP3
-- MP4
+- MP3       -FLAC
+- MP4       -OGG
 - M4A
 - AAC
 - FLAC
@@ -21,7 +20,6 @@ An android music player based on BASS Audio Library. This application can play m
 - MPP
 - MP+
 - TTA
-|||---|||
 
 License
 ========

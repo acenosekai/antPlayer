@@ -55,7 +55,7 @@ antPlayer is not even in alpha stage. If you insist to try this app you need to 
     
 License
 ========
-    BASS audio library has their own license. visit  <a href="http://www.un4seen.com/">http://www.un4seen.com/</a> for more information.
+    BASS audio library has their own license. visit http://www.un4seen.com/ for more information.
     
 All source code is licensed under Apache License 2.0. If you create your own app (free or commercial) that uses some or all of the code from this codebase, you MUST attribute it to the original author, no exceptions. You can do so by displaying an "About" or "Licenses" screen in your app that links back to this GitHub page AND includes the following notice: 
 

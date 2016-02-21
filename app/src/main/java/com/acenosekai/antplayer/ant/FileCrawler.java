@@ -4,10 +4,14 @@ import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import com.acenosekai.antplayer.App;
+import com.acenosekai.antplayer.MainActivity;
 import com.acenosekai.antplayer.R;
+import com.acenosekai.antplayer.realms.Cover;
 import com.acenosekai.antplayer.realms.Library;
 import com.acenosekai.antplayer.realms.Music;
 import com.acenosekai.antplayer.realms.Playlist;
+import com.acenosekai.antplayer.realms.repo.CoverRepo;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 import com.un4seen.bass.BASS;
 
 import java.io.File;
@@ -20,13 +24,18 @@ import io.realm.RealmResults;
  */
 public class FileCrawler {
     private App app;
+    private MainActivity mainActivity;
 
-    public FileCrawler(App app) {
-        this.app = app;
+    public FileCrawler(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+        this.app = (App) mainActivity.getApplication();
     }
 
     public void reload(RealmResults<Library> libraries) {
-        RealmResults<Music> allMusic = app.getRealm().where(Music.class).findAll();
+        if (mainActivity.getPlaybackService().isPlaying()) {
+            mainActivity.getPlaybackService().stop();
+        }
+        RealmResults<Music> allMusic = new MusicRepo(app.getRealm()).findAll();
         app.getRealm().beginTransaction();
         allMusic.clear();
         for (Library lib : libraries) {
@@ -36,10 +45,16 @@ public class FileCrawler {
         p.getMusicFileList().clear();
         p.getMusicFileListShuffle().clear();
         app.setRegistry(App.REGISTRY.SONG_POSITION, "0");
-        p.getMusicFileList().addAll(app.getRealm().where(Music.class).findAll());
+        p.getMusicFileList().addAll(new MusicRepo(app.getRealm()).findAll());
         app.getRealm().copyToRealmOrUpdate(p);
         app.getRealm().commitTransaction();
         app.saveRegistry(App.REGISTRY.SONG_POSITION, "0");
+
+
+        if (new MusicRepo(app.getRealm()).countMusic() > 0) {
+            mainActivity.getPlaybackService().generateList();
+            mainActivity.getPlaybackService().init();
+        }
     }
 
 
@@ -65,6 +80,16 @@ public class FileCrawler {
                 m.setAlbum(defaultIfNotNull(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM), app.getString(R.string.unknown_album)));
                 m.setAlbumArtist(defaultIfNotNull(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUMARTIST), m.getArtist()));
                 m.setAlbumKey(m.getAlbum() + "-" + m.getAlbumArtist());
+
+                Cover c = new CoverRepo(app.getRealm()).findOneCoverByAlbumKey(m.getAlbumKey());
+                if (c == null) {
+                    Cover nc = new Cover();
+                    nc.setAlbumKey(m.getAlbumKey());
+                    nc.setChecked(true);
+                    nc.setCover(metaRetriever.getEmbeddedPicture());
+                    app.getRealm().copyToRealmOrUpdate(nc);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -121,9 +146,8 @@ public class FileCrawler {
                     m.setAlbumArtist(defaultIfNotNull(m.getAlbumArtist(), m.getArtist()));
                     m.setAlbumKey(m.getAlbum() + "-" + m.getAlbumArtist());
 //count length
-                    int chan = 0;
+                    int chan;
                     BassInit.getInstance(app);
-                    chan = 0;
                     if ((chan = BASS.BASS_StreamCreateFile(m.getPath(), 0, 0, BASS.BASS_SAMPLE_FLOAT)) == 0) {
                         // whatever it is, it ain't playable
                         Log.i("antPlay", "Can't play the file2");

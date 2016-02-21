@@ -13,6 +13,7 @@ import com.acenosekai.antplayer.fragments.NowPlayingFragment;
 import com.acenosekai.antplayer.holders.MusicItemHolder;
 import com.acenosekai.antplayer.realms.Music;
 import com.acenosekai.antplayer.realms.Playlist;
+import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 
 import java.util.List;
 
@@ -64,10 +65,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicItemHolder> {
         holder.getItemView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.getRealm().beginTransaction();
+                PlaylistRepo playlistRepo = new PlaylistRepo(app.getRealm());
 
+                app.getRealm().beginTransaction();
                 List<Music> musicList = musics.subList(0, musics.size());
-                Playlist p = app.getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
+                Playlist p = playlistRepo.getCurrentPlaylist();
                 p.getMusicFileList().clear();
                 p.getMusicFileListShuffle().clear();
                 app.setRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(music)));

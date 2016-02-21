@@ -13,6 +13,7 @@ import com.acenosekai.antplayer.fragments.StandAloneMusicFragment;
 import com.acenosekai.antplayer.holders.ArtistItemHolder;
 import com.acenosekai.antplayer.models.Artist;
 import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +74,12 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistItemHolder> {
         holder.getListDesc().setSelected(true);
         holder.getListDesc().setText(artist.getTotalSong() + " " + app.getString(R.string.songs));
 
+        final MusicRepo musicRepo = new MusicRepo(app.getRealm());
+
         holder.getListMenu().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RealmResults<Music> musics = app.getRealm().where(Music.class).equalTo("artist", artist.getName()).findAll();
+                RealmResults<Music> musics = musicRepo.findMusicByArtist(artist.getName());
                 mainActivity.filesDialogMenu(artist.getName(), musics).show();
             }
         });
@@ -86,7 +89,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistItemHolder> {
             public void onClick(View v) {
                 StandAloneMusicFragment musicFragment = new StandAloneMusicFragment();
                 musicFragment.setTitle(artist.getName());
-                musicFragment.setMusicList(app.getRealm().where(Music.class).equalTo("artist", artist.getName()).findAll());
+                musicFragment.setMusicList(musicRepo.findMusicByArtist(artist.getName()));
                 mainActivity.changePage(musicFragment);
             }
         });

@@ -11,6 +11,7 @@ import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.holders.FolderItemHolder;
 import com.acenosekai.antplayer.models.Folder;
 import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 
 import java.util.List;
@@ -53,19 +54,18 @@ public class FolderFileAdapter extends RecyclerView.Adapter<FolderItemHolder> {
         final Folder f = folders.get(position);
         holder.getListText().setText(f.getName());
         holder.getListText().setSelected(true);
+
+        final MusicRepo musicRepo = new MusicRepo(app.getRealm());
         if (f.isDirectory()) {
             holder.getListIcon().setIcon(CommunityMaterial.Icon.cmd_folder_outline);
         } else {
             holder.getListIcon().setIcon(CommunityMaterial.Icon.cmd_music_note);
         }
 
-        //RealmResults<Music> musics = app.getRealm().where(Music.class).equalTo("artist", artist.getName()).findAll();
-//        mainActivity.filesDialogMenu(artist.getName(),musics).show();
-//
         holder.getListMenu().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RealmResults<Music> musics = app.getRealm().where(Music.class).beginsWith("path", f.getPath()).findAll();
+                RealmResults<Music> musics = musicRepo.findMusicInDirectory(f.getPath());
                 mainActivity.filesDialogMenu(f.getName(), musics).show();
             }
         });

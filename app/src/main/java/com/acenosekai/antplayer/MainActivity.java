@@ -135,7 +135,9 @@ public class MainActivity extends AppCompatActivity {
     public BaseFragment getInitialFragment() {
         try {
             return initialFragmentClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;

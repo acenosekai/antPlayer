@@ -15,7 +15,7 @@
 
         <TextView
             style="@style/AppTheme.ToolbarTitle"
-            android:text="@string/fragment_files_title" />
+            android:text="@string/fragment_now_playing_title" />
 
         <com.mikepenz.iconics.view.IconicsImageView
             style="@style/AppTheme.ToolbarIconLeft"

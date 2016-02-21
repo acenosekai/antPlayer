@@ -13,7 +13,7 @@ import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.adapters.MusicAdapter;
 import com.acenosekai.antplayer.fragments.BaseStandAloneFragment;
 import com.acenosekai.antplayer.fragments.FilesFragment;
-import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 
 /**
  * Created by Acenosekai on 1/16/2016.
@@ -57,7 +57,8 @@ public class MusicFragment extends BaseStandAloneFragment {
     }
 
     private void applyAdapter() {
-        this.adapter = new MusicAdapter(getMainActivity(), getApp().getRealm().where(Music.class).contains("title", parent.getSearchText().getText().toString(), false).findAll());
+        MusicRepo musicRepo = new MusicRepo(getApp().getRealm());
+        this.adapter = new MusicAdapter(getMainActivity(), musicRepo.searchByTitle(parent.getSearchText().getText().toString()));
         contentList.setAdapter(adapter);
     }
 }

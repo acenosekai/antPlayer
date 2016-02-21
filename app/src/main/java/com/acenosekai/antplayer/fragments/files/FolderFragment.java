@@ -14,6 +14,8 @@ import com.acenosekai.antplayer.fragments.BaseStandAloneFragment;
 import com.acenosekai.antplayer.models.Folder;
 import com.acenosekai.antplayer.realms.Library;
 import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.repo.LibraryRepo;
+import com.acenosekai.antplayer.realms.repo.MusicRepo;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,20 +34,21 @@ public class FolderFragment extends BaseStandAloneFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View fragmentView = inflater.inflate(R.layout.fragment_files_folder, container, false);
-
+        MusicRepo musicRepo = new MusicRepo(getApp().getRealm());
+        LibraryRepo libraryRepo = new LibraryRepo(getApp().getRealm());
         Folder rootTree = new Folder();
         curentPath = rootTree;
         rootTree.setPath("/");
         rootTree.setName(getMainActivity().getString(R.string.root_folder));
         rootTree.setDirectory(true);
-        RealmResults<Library> libraries = getApp().getRealm().where(Library.class).findAll();
+        RealmResults<Library> libraries = libraryRepo.findAll();
         for (Library lib : libraries) {
             final Folder ft = new Folder();
             ft.setPath(lib.getPath());
             ft.setName(lib.getPath());
             ft.setDirectory(true);
             ft.setParent(rootTree);
-            RealmResults<Music> musicFiles = getApp().getRealm().where(Music.class).beginsWith("path", lib.getPath()).findAll();
+            RealmResults<Music> musicFiles = musicRepo.findMusicInDirectory(lib.getPath());
             for (Music mf : musicFiles) {
                 generateFileTree(ft, mf);
             }

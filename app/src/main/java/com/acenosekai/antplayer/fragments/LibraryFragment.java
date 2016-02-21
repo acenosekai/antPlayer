@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.adapters.LibraryAdapter;
 import com.acenosekai.antplayer.ant.FileCrawler;
-import com.acenosekai.antplayer.realms.Library;
-
-import io.realm.RealmResults;
+import com.acenosekai.antplayer.realms.repo.LibraryRepo;
 
 /**
  * Created by Acenosekai on 1/16/2016.
@@ -20,44 +18,19 @@ import io.realm.RealmResults;
  */
 public class LibraryFragment extends BaseFragment {
 
-    private RealmResults<Library> libraries;
     private LibraryAdapter adapter;
-    private boolean needReload = false;
-
-    public RealmResults<Library> getLibraries() {
-        return libraries;
-    }
-
-    public void setNeedReload(boolean needReload) {
-        this.needReload = needReload;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_library, container, false);
-
-        final RealmResults<Library> libraries = getApp().getRealm().where(Library.class).findAll();
-
+        final LibraryRepo libraryRepo = new LibraryRepo(getApp().getRealm());
         RecyclerView contentList = (RecyclerView) fragmentView.findViewById(R.id.content_list);
         LinearLayoutManager llm = new LinearLayoutManager(getMainActivity());
         contentList.setLayoutManager(llm);
         contentList.setHasFixedSize(true);
 
-        this.adapter = new LibraryAdapter(getApp(), libraries);
+        this.adapter = new LibraryAdapter(getMainActivity(), libraryRepo.findAll());
         contentList.setAdapter(adapter);
-
-        if (needReload) {
-            LoadingFragment lf = new LoadingFragment();
-            lf.setProcess(new LoadingFragment.Process() {
-                @Override
-                public void process() {
-                    FileCrawler fc = new FileCrawler(getApp());
-                    fc.reload(libraries);
-                }
-            });
-            lf.setBackFragment(new LibraryFragment());
-            getMainActivity().changePage(lf);
-        }
 
         fragmentView.findViewById(R.id.reload).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +39,8 @@ public class LibraryFragment extends BaseFragment {
                 lf.setProcess(new LoadingFragment.Process() {
                     @Override
                     public void process() {
-                        FileCrawler fc = new FileCrawler(getApp());
-                        fc.reload(libraries);
+                        FileCrawler fc = new FileCrawler(getMainActivity());
+                        fc.reload(libraryRepo.findAll());
                     }
                 });
                 lf.setBackFragment(new LibraryFragment());

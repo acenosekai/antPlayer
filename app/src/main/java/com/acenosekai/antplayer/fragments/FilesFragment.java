@@ -44,9 +44,6 @@ public class FilesFragment extends BaseFragment {
         this.fragmentView = inflater.inflate(R.layout.fragment_files, container, false);
         final ViewPager pager = (ViewPager) fragmentView.findViewById(R.id.files_pager);
 
-//        getApp().getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
-//        Toast.makeText(getMainActivity(), getApp().getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst().getMusicFileList().size(), Toast.LENGTH_SHORT).show();
-
         List<BaseStandAloneFragment> fl = new ArrayList<>();
         BaseStandAloneFragment artist = new ArtistFragment();
         BaseStandAloneFragment album = new AlbumFragment();

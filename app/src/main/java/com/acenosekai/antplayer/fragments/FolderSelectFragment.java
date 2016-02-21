@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.adapters.FolderAdapter;
+import com.acenosekai.antplayer.ant.FileCrawler;
 import com.acenosekai.antplayer.realms.Library;
+import com.acenosekai.antplayer.realms.repo.LibraryRepo;
 
 import io.realm.RealmResults;
 
@@ -33,7 +35,7 @@ public class FolderSelectFragment extends BaseStandAloneFragment {
         getMainActivity().getDrawerResult().getDrawerLayout().setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         fragmentView = inflater.inflate(R.layout.fragment_folder_select, container, false);
         setBackFragment(new LibraryFragment());
-
+        final LibraryRepo libraryRepo = new LibraryRepo(getApp().getRealm());
 
         RecyclerView contentList = (RecyclerView) fragmentView.findViewById(R.id.content_list);
         LinearLayoutManager llm = new LinearLayoutManager(getMainActivity());
@@ -60,7 +62,7 @@ public class FolderSelectFragment extends BaseStandAloneFragment {
         fragmentView.findViewById(R.id.select_folder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RealmResults<Library> libraries = getApp().getRealm().where(Library.class).findAll();
+                RealmResults<Library> libraries = libraryRepo.findAll();
                 boolean duplicate = false;
                 boolean parentRegistered = false;
                 for (Library l : libraries) {
@@ -79,13 +81,19 @@ public class FolderSelectFragment extends BaseStandAloneFragment {
                     Library lib = new Library();
                     lib.setPath(selectedPath);
                     getApp().getRealm().beginTransaction();
-                    getApp().getRealm().where(Library.class).beginsWith("path", selectedPath).findAll().clear();
+                    libraryRepo.findLibraryBeginWithPath(selectedPath).clear();
                     getApp().getRealm().copyToRealmOrUpdate(lib);
                     getApp().getRealm().commitTransaction();
 
-                    LibraryFragment lf = new LibraryFragment();
-                    lf.setNeedReload(true);
-
+                    LoadingFragment lf = new LoadingFragment();
+                    lf.setProcess(new LoadingFragment.Process() {
+                        @Override
+                        public void process() {
+                            FileCrawler fc = new FileCrawler(getMainActivity());
+                            fc.reload(libraryRepo.findAll());
+                        }
+                    });
+                    lf.setBackFragment(new LibraryFragment());
                     getMainActivity().changePage(lf);
                 }
             }

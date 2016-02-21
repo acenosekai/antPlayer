@@ -1,5 +1,5 @@
 # antPlayer
-An android music player based on BASS Audio Library. This application can play music with lower latency than the default Android music player and lower latency mean more accurate. File types supported by this application is also much more. Its also play currently the best music file type DSD file (DFF,DSF).
+An android music player based on <a href="http://www.un4seen.com/">BASS Audio Library</a>. This application can play music with lower latency than the default Android music player and lower latency mean more accurate. File types supported by this application is also much more. Its also play currently the best music file type DSD file (DFF,DSF).
 
 # How To Use
 antPlayer is not even in alpha stage. If you insist to try this app you need to clone and build it with android studio. If you have any problem please submit an issue. Good luck.
@@ -55,7 +55,7 @@ antPlayer is not even in alpha stage. If you insist to try this app you need to 
     
 License
 ========
-    BASS audio library has their own license. visit http://www.un4seen.com/ for more information.
+    BASS audio library has their own license. visit  <a href="http://www.un4seen.com/">http://www.un4seen.com/</a> for more information.
     
 All source code is licensed under Apache License 2.0. If you create your own app (free or commercial) that uses some or all of the code from this codebase, you MUST attribute it to the original author, no exceptions. You can do so by displaying an "About" or "Licenses" screen in your app that links back to this GitHub page AND includes the following notice: 
 

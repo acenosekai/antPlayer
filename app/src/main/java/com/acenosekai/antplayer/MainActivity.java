@@ -76,21 +76,33 @@ public class MainActivity extends AppCompatActivity {
             playbackService.setOnInit(new PlaybackService.OnInit() {
                 @Override
                 public void onInit(Music music) {
-                    currentFragment.onPlaybackInit(music);
+                    try {
+                        currentFragment.onPlaybackInit(music);
+                    } catch (Exception e) {
+                        //prevent error on fragment already destroyed
+                    }
                 }
             });
 
             playbackService.setOnPlayingRun(new PlaybackService.OnPlayingRun() {
                 @Override
                 public void onPlayingRun(Music music) {
-                    currentFragment.onPlaybackPlayingRun(music);
+                    try {
+                        currentFragment.onPlaybackPlayingRun(music);
+                    } catch (Exception e) {
+                        //prevent error on fragment already destroyed
+                    }
                 }
             });
 
             playbackService.setOnShuffleChange(new PlaybackService.OnShuffleChange() {
                 @Override
                 public void onShuffleChange(boolean shuffle) {
-                    currentFragment.onPlaybackShuffleChange(shuffle);
+                    try {
+                        currentFragment.onPlaybackShuffleChange(shuffle);
+                    } catch (Exception e) {
+                        //prevent error on fragment already destroyed
+                    }
 
                 }
             });
@@ -98,14 +110,22 @@ public class MainActivity extends AppCompatActivity {
             playbackService.setOnPlayingStatusChange(new PlaybackService.OnPlayingStatusChange() {
                 @Override
                 public void onPlayingStatusChanged(boolean playing) {
-                    currentFragment.onPlaybackPlayingStatusChange(playing);
+                    try {
+                        currentFragment.onPlaybackPlayingStatusChange(playing);
+                    } catch (Exception e) {
+                        //prevent error on fragment already destroyed
+                    }
                 }
             });
 
             playbackService.setOnRepeatChange(new PlaybackService.OnRepeatChange() {
                 @Override
                 public void onRepeatChange(String repeat) {
-                    currentFragment.onPlaybackRepeatChange(repeat);
+                    try {
+                        currentFragment.onPlaybackRepeatChange(repeat);
+                    } catch (Exception e) {
+                        //prevent error on fragment already destroyed
+                    }
                 }
             });
 

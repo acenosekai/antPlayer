@@ -65,12 +65,12 @@ public class PlaybackService extends Service {
                     onPlayingRun.onPlayingRun(music);
                 }
                 if (getBytesPosition() >= getBytesTotal()) {
-                    if (Integer.parseInt(getRepeat()) == App.REPEAT.NO_REPEAT && musicList.size() - 1 == getIndex()) {
-
-                    } else if (Integer.parseInt(getRepeat()) == App.REPEAT.REPEAT_ONE) {
-                        play();
-                    } else {
-                        next();
+                    if (Integer.parseInt(getRepeat()) != App.REPEAT.NO_REPEAT || musicList.size() - 1 != getIndex()) {
+                        if (Integer.parseInt(getRepeat()) == App.REPEAT.REPEAT_ONE) {
+                            play();
+                        } else {
+                            next();
+                        }
                     }
                 }
                 handler.postDelayed(this, 100);
@@ -219,9 +219,7 @@ public class PlaybackService extends Service {
                 .addAction(android.R.drawable.ic_media_pause, "Pause", pPauseIntent)
                 .addAction(android.R.drawable.ic_media_next, "Next", pNextIntent);
 
-//        if (this.getBitMapCover() != null) {
-//            buildNotif.setLargeIcon(Bitmap.createScaledBitmap(this.getBitMapCover(), 128, 128, false));
-//        }
+
         Notification notification = buildNotif.build();
         startForeground(PlaybackService.SERVICE_ID, notification);
     }
@@ -239,28 +237,34 @@ public class PlaybackService extends Service {
             } else if (intent.getAction().equals(PlaybackService.NEXT_ACTION)) {
                 Log.i(TAG, "Clicked Next");
                 next();
-            } else if (intent.getAction().equals(PlaybackService.NO_REPEAT)) {
-                //TODO no repeat action
-            } else if (intent.getAction().equals(PlaybackService.REPEAT_ALL)) {
-                //TODO repeat all action
-            } else if (intent.getAction().equals(PlaybackService.REPEAT_ONE)) {
-                //TODO repeat one action
-            } else if (intent.getAction().equals(PlaybackService.SHUFFLE_OFF)) {
+            }
+//            else if (intent.getAction().equals(PlaybackService.NO_REPEAT)) {
+//                //TODO no repeat action
+//            } else if (intent.getAction().equals(PlaybackService.REPEAT_ALL)) {
+//                //TODO repeat all action
+//            } else if (intent.getAction().equals(PlaybackService.REPEAT_ONE)) {
+//                //TODO repeat one action
+//            }
+            else if (intent.getAction().equals(PlaybackService.SHUFFLE_OFF)) {
                 setShuffle(false);
             } else if (intent.getAction().equals(PlaybackService.SHUFFLE_ON)) {
                 setShuffle(true);
-            } else if (intent.getAction().equals(PlaybackService.CROSSFADE_OFF)) {
-                //TODO crossfade off
-            } else if (intent.getAction().equals(PlaybackService.CROSSFADE_ON)) {
-                //TODO crossfade on
-            } else if (intent.getAction().equals(PlaybackService.PAUSE_ACTION)) {
+            }
+//            else if (intent.getAction().equals(PlaybackService.CROSSFADE_OFF)) {
+//                //TODO crossfade off
+//            } else if (intent.getAction().equals(PlaybackService.CROSSFADE_ON)) {
+//                //TODO crossfade on
+//            }
+            else if (intent.getAction().equals(PlaybackService.PAUSE_ACTION)) {
                 Log.i(TAG, "Received Stop Foreground Intent");
                 pause();
-            } else if (intent.getAction().equals(PlaybackService.BIND_PLAYBACK)) {
-                //TODO will drop this bind
-            } else if (intent.getAction().equals(PlaybackService.APPLY_EFFECT)) {
-                //TODO apply effect
-            } else if (intent.getAction().equals(PlaybackService.REINIT_PLAYLIST)) {
+            }
+//            else if (intent.getAction().equals(PlaybackService.BIND_PLAYBACK)) {
+//                //TODO will drop this bind
+//            } else if (intent.getAction().equals(PlaybackService.APPLY_EFFECT)) {
+//                //TODO apply effect
+//            }
+            else if (intent.getAction().equals(PlaybackService.REINIT_PLAYLIST)) {
                 generateList();
                 init(0);
             }

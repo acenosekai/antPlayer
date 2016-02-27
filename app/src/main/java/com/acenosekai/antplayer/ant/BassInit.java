@@ -13,9 +13,12 @@ import java.io.File;
  */
 public class BassInit {
 
-    private static final String TAG = "antPlay";
+    private static final String TAG = "BASS";
+    private static final int SAMPLE44 = 44100;
+    private static final int SAMPLE48 = 48000;
+    private static final int SAMPLE96 = 96000;
+    private static final int SAMPLE192 = 192000;
     private static BassInit instance;
-
 
     private BassInit() {
 
@@ -41,11 +44,23 @@ public class BassInit {
         if (instance == null) {
             BASS.BASS_Free();
             instance = new BassInit();
-            if (!BASS.BASS_Init(-1, 48000, BASS.BASS_DEVICE_FREQ)) {
+            Log.i(TAG, "init with sample " + SAMPLE192 + "Hz");
+            if (!BASS.BASS_Init(-1, SAMPLE192, BASS.BASS_DEVICE_FREQ)) {
                 Log.i(TAG, "Can't initialize device");
+                Log.i(TAG, "init with sample " + SAMPLE96 + "Hz");
+                if (!BASS.BASS_Init(-1, SAMPLE96, BASS.BASS_DEVICE_FREQ)) {
+                    Log.i(TAG, "Can't initialize device");
+                    Log.i(TAG, "init with sample " + SAMPLE48 + "Hz");
+                    if (!BASS.BASS_Init(-1, SAMPLE48, BASS.BASS_DEVICE_FREQ)) {
+                        Log.i(TAG, "Can't initialize device");
+                        Log.i(TAG, "init with sample " + SAMPLE44 + "Hz");
+                        if (!BASS.BASS_Init(-1, SAMPLE44, BASS.BASS_DEVICE_FREQ)) {
+                            Log.i(TAG, "Can't initialize device");
+                        }
+                    }
+                }
             }
-            Log.i(TAG, "Can't initialize device");
-//            }
+
             BASS.BASS_INFO info = new BASS.BASS_INFO();
             if (BASS.BASS_GetInfo(info)) {
                 Log.i(TAG, "Min Buffer :" + info.minbuf);
@@ -63,4 +78,6 @@ public class BassInit {
 
         return instance;
     }
+
+
 }

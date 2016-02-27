@@ -43,7 +43,7 @@ public class PlaybackService extends Service {
     public static final String APPLY_EFFECT = "apply_effect";
     public static final String REINIT_PLAYLIST = "reinit_playlist";
     public static final int SERVICE_ID = 134;
-    private static final String TAG = "antPlay";
+    private static final String TAG = "BASS";
     boolean playing = false;
     private List<Music> musicList = new ArrayList<>();
     private Music music;

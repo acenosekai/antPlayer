@@ -19,8 +19,8 @@ import com.acenosekai.antplayer.fragments.FilesFragment;
 import com.acenosekai.antplayer.fragments.LibraryFragment;
 import com.acenosekai.antplayer.fragments.NowPlayingFragment;
 import com.acenosekai.antplayer.realms.Music;
-import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.repo.MusicRepo;
+import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 import com.acenosekai.antplayer.services.PlaybackService;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
@@ -31,6 +31,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.Collection;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -265,18 +266,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         switch (which) {
                             case 0:
-                                ((App) getApplication()).getRealm().beginTransaction();
-                                Playlist p = ((App) getApplication()).getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
-                                p.getMusicFileList().clear();
-                                p.getMusicFileListShuffle().clear();
-                                ((App) getApplication()).setRegistry(App.REGISTRY.SONG_POSITION, "0");
-                                p.getMusicFileList().addAll(musics);
-                                ((App) getApplication()).getRealm().copyToRealmOrUpdate(p);
-                                ((App) getApplication()).getRealm().commitTransaction();
+                                PlaylistRepo playlistRepo = new PlaylistRepo(((App) getApplication()).getRealm());
+                                ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, "0");
+                                playlistRepo.saveMusicList((List<Music>) musics);
                                 NowPlayingFragment npf = new NowPlayingFragment();
-//                                npf.setShowAndPlay(true);
-                                //                npf.setShowAndPlay(true);
-
 
                                 if (getPlaybackService().isPlaying()) {
                                     getPlaybackService().stop();

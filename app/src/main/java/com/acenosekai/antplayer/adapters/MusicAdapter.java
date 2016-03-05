@@ -12,7 +12,6 @@ import com.acenosekai.antplayer.ant.Utility;
 import com.acenosekai.antplayer.fragments.NowPlayingFragment;
 import com.acenosekai.antplayer.holders.MusicItemHolder;
 import com.acenosekai.antplayer.realms.Music;
-import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 
 import java.util.List;
@@ -67,18 +66,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicItemHolder> {
             public void onClick(View v) {
                 PlaylistRepo playlistRepo = new PlaylistRepo(app.getRealm());
 
-                app.getRealm().beginTransaction();
                 List<Music> musicList = musics.subList(0, musics.size());
-                Playlist p = playlistRepo.getCurrentPlaylist();
-                p.getMusicFileList().clear();
-                p.getMusicFileListShuffle().clear();
-                app.setRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(music)));
-                p.getMusicFileList().addAll(musicList);
-                app.getRealm().copyToRealmOrUpdate(p);
-                app.getRealm().commitTransaction();
+                app.saveRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(music)));
+                playlistRepo.saveMusicList(musicList);
                 NowPlayingFragment npf = new NowPlayingFragment();
-//                npf.setShowAndPlay(true);
-
 
                 if (mainActivity.getPlaybackService().isPlaying()) {
                     mainActivity.getPlaybackService().stop();
@@ -90,7 +81,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicItemHolder> {
                 mainActivity.getPlaybackService().play(0);
 
                 mainActivity.changePage(npf);
-
 
 
             }

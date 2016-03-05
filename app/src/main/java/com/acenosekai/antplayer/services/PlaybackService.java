@@ -18,12 +18,11 @@ import com.acenosekai.antplayer.MainActivity;
 import com.acenosekai.antplayer.ant.BassInit;
 import com.acenosekai.antplayer.realms.Cover;
 import com.acenosekai.antplayer.realms.Music;
-import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.repo.CoverRepo;
+import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 import com.un4seen.bass.BASS;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -94,14 +93,29 @@ public class PlaybackService extends Service {
     }
 
     public void setShuffle(boolean shuffle) {
+        Music mu = null;
+        if (musicList.size() >= (getIndex() + 1)) {
+            mu = musicList.get(getIndex());
+        }
+
         if (shuffle) {
             ((App) getApplication()).saveRegistry(App.REGISTRY.SHUFFLE, String.valueOf(1));
-            //save shuffle here
-            generateShuffleList();
         } else {
             ((App) getApplication()).saveRegistry(App.REGISTRY.SHUFFLE, String.valueOf(0));
-            generateMusicList();
         }
+
+        generateList(true);
+
+        try {
+            if (mu != null) {
+                ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(mu)));
+            } else {
+                ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, "0");
+            }
+        } catch (Exception e) {
+            ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, "0");
+        }
+
         if (onShuffleChange != null) {
             onShuffleChange.onShuffleChange(shuffle);
         }
@@ -113,56 +127,19 @@ public class PlaybackService extends Service {
     }
 
     public void generateList() {
-        if (isShuffle()) {
-            getShuffleList();
-        } else {
-            generateMusicList();
-        }
+        generateList(false);
     }
 
-    public void generateMusicList() {
-        Playlist p = ((App) getApplication()).getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
+    public void generateList(boolean reshuffle) {
+        PlaylistRepo pr = new PlaylistRepo(((App) getApplication()).getRealm());
+
         musicList.clear();
-        for (Music m : p.getMusicFileList()) {
-            musicList.add(m);
-        }
-        Music mu = musicList.get(getIndex());
-        try {
-            ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(mu)));
-        } catch (Exception e) {
-            ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, "0");
-        }
-    }
 
-    public void getShuffleList() {
-        Playlist p = ((App) getApplication()).getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
-        if (p.getMusicFileListShuffle().isEmpty()) {
-            generateShuffleList();
+        if (isShuffle()) {
+            musicList.addAll(pr.generateMusicListShuffle(reshuffle));
         } else {
-            musicList.clear();
-            for (Music m : p.getMusicFileListShuffle()) {
-                musicList.add(m);
-            }
+            musicList.addAll(pr.generateMusicList());
         }
-    }
-
-    private void generateShuffleList() {
-        generateMusicList();
-        Music m;
-        try {
-            m = musicList.get(getIndex());
-        } catch (Exception ex) {
-            m = musicList.get(0);
-        }
-        Collections.shuffle(musicList);
-        ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, String.valueOf(musicList.indexOf(m)));
-
-        ((App) getApplication()).getRealm().beginTransaction();
-        Playlist p = ((App) getApplication()).getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
-        p.getMusicFileListShuffle().clear();
-        p.getMusicFileListShuffle().addAll(musicList);
-        ((App) getApplication()).getRealm().copyToRealmOrUpdate(p);
-        ((App) getApplication()).getRealm().commitTransaction();
     }
 
     public String getRepeat() {

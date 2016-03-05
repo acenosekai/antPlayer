@@ -9,9 +9,9 @@ import com.acenosekai.antplayer.R;
 import com.acenosekai.antplayer.realms.Cover;
 import com.acenosekai.antplayer.realms.Library;
 import com.acenosekai.antplayer.realms.Music;
-import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.repo.CoverRepo;
 import com.acenosekai.antplayer.realms.repo.MusicRepo;
+import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 import com.un4seen.bass.BASS;
 
 import java.io.File;
@@ -41,14 +41,10 @@ public class FileCrawler {
         for (Library lib : libraries) {
             craw(lib.getPath());
         }
-        Playlist p = app.getRealm().where(Playlist.class).equalTo("name", "Current Playlist").findFirst();
-        p.getMusicFileList().clear();
-        p.getMusicFileListShuffle().clear();
-        app.setRegistry(App.REGISTRY.SONG_POSITION, "0");
-        p.getMusicFileList().addAll(new MusicRepo(app.getRealm()).findAll());
-        app.getRealm().copyToRealmOrUpdate(p);
         app.getRealm().commitTransaction();
+        PlaylistRepo playlistRepo = new PlaylistRepo(app.getRealm());
         app.saveRegistry(App.REGISTRY.SONG_POSITION, "0");
+        playlistRepo.saveMusicList(new MusicRepo(app.getRealm()).findAll());
 
 
         if (new MusicRepo(app.getRealm()).countMusic() > 0) {

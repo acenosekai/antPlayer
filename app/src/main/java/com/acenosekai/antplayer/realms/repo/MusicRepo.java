@@ -19,6 +19,11 @@ public class MusicRepo extends AntRepo {
         return r.where(Music.class).findAll();
     }
 
+    public Music findOne(String path) {
+        return r.where(Music.class).equalTo("path", path).findFirst();
+    }
+
+
     public RealmResults<Music> findMusicByAlbumKey(String albumKey) {
         return r.where(Music.class).equalTo("albumKey", albumKey).findAll();
     }

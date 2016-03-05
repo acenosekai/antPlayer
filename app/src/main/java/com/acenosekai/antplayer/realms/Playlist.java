@@ -1,6 +1,5 @@
 package com.acenosekai.antplayer.realms;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -12,15 +11,23 @@ public class Playlist extends RealmObject {
     @PrimaryKey
     private String name;
     private int type;
-    private RealmList<Music> musicFileList;
-    private RealmList<Music> musicFileListShuffle;
+    private String musicList;
+    private String musicListShuffle;
 
-    public RealmList<Music> getMusicFileListShuffle() {
-        return musicFileListShuffle;
+    public String getMusicList() {
+        return musicList;
     }
 
-    public void setMusicFileListShuffle(RealmList<Music> musicFileListShuffle) {
-        this.musicFileListShuffle = musicFileListShuffle;
+    public void setMusicList(String musicList) {
+        this.musicList = musicList;
+    }
+
+    public String getMusicListShuffle() {
+        return musicListShuffle;
+    }
+
+    public void setMusicListShuffle(String musicListShuffle) {
+        this.musicListShuffle = musicListShuffle;
     }
 
     public String getName() {
@@ -37,13 +44,5 @@ public class Playlist extends RealmObject {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public RealmList<Music> getMusicFileList() {
-        return musicFileList;
-    }
-
-    public void setMusicFileList(RealmList<Music> musicFileList) {
-        this.musicFileList = musicFileList;
     }
 }

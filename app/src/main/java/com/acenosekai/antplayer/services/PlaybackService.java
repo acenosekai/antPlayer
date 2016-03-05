@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,8 +16,10 @@ import android.util.Log;
 import com.acenosekai.antplayer.App;
 import com.acenosekai.antplayer.MainActivity;
 import com.acenosekai.antplayer.ant.BassInit;
+import com.acenosekai.antplayer.realms.Cover;
 import com.acenosekai.antplayer.realms.Music;
 import com.acenosekai.antplayer.realms.Playlist;
+import com.acenosekai.antplayer.realms.repo.CoverRepo;
 import com.un4seen.bass.BASS;
 
 import java.util.ArrayList;
@@ -219,6 +223,12 @@ public class PlaybackService extends Service {
                 .addAction(android.R.drawable.ic_media_pause, "Pause", pPauseIntent)
                 .addAction(android.R.drawable.ic_media_next, "Next", pNextIntent);
 
+        //set cover if exist
+        Cover c = new CoverRepo(((App) getApplication()).getRealm()).findOneCoverByAlbumKey(music.getAlbumKey());
+        if (c.getCover() != null) {
+            Bitmap bitMapCover = BitmapFactory.decodeByteArray(c.getCover(), 0, c.getCover().length);
+            buildNotif.setLargeIcon(Bitmap.createScaledBitmap(bitMapCover, 128, 128, false));
+        }
 
         Notification notification = buildNotif.build();
         startForeground(PlaybackService.SERVICE_ID, notification);

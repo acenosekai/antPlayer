@@ -17,15 +17,26 @@
     <string name="fragment_files_playlist">Playlist</string>
     <string name="root_folder">library</string>
     <string name="fragment_now_playing_title">Now Playing</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="menu_play">Play</string>
+    <string name="menu_add_to_playlist">Add To Playlist</string>
+    <string name="menu_current_playlist">Current Playlist</string>
+    <string name="menu_new_playlist">New Playlist</string>
+    <string name="menu_select_playlist">Select Playlist</string>
 
     <string-array name="files_menu">
-        <item>Play</item>
-        <item>Add To Playlist</item>
+        <item>@string/menu_play</item>
+        <item>@string/menu_add_to_playlist</item>
+    </string-array>
+
+    <string-array name="files_menu_new_playlist">
+        <item>@string/menu_current_playlist</item>
+        <item>@string/menu_new_playlist</item>
     </string-array>
 
     <string-array name="files_menu_playlist">
-        <item>Current Playlist</item>
-        <item>New</item>
-        <item>Select Playlist</item>
+        <item>@string/menu_current_playlist</item>
+        <item>@string/menu_new_playlist</item>
+        <item>@string/menu_select_playlist</item>
     </string-array>
 </resources>

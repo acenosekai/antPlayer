@@ -10,8 +10,10 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.acenosekai.antplayer.fragments.BaseFragment;
@@ -19,9 +21,11 @@ import com.acenosekai.antplayer.fragments.FilesFragment;
 import com.acenosekai.antplayer.fragments.LibraryFragment;
 import com.acenosekai.antplayer.fragments.NowPlayingFragment;
 import com.acenosekai.antplayer.realms.Music;
+import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.repo.MusicRepo;
 import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 import com.acenosekai.antplayer.services.PlaybackService;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -30,6 +34,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,9 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private Drawer drawerResult;
     private Class<? extends BaseFragment> initialFragmentClass;
     private PlaybackService playbackService;
+    private PlaylistRepo playlistRepo;
     protected ServiceConnection mServerConn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
+            playlistRepo = new PlaylistRepo(((App) getApplication()).getRealm());
             playbackService = ((PlaybackService.PlaybackServiceBinder) binder).getService();
             PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName(R.string.fragment_files_title);
             SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName(R.string.fragment_library_title);
@@ -257,27 +264,102 @@ public class MainActivity extends AppCompatActivity {
         startService(playIntent);
     }
 
-    public MaterialDialog.Builder playlistDialogMenu(String title, final Collection<? extends Music> musics) {
+    public MaterialDialog newPlaylistDialog(String title, final Collection<? extends Music> musics) {
+        View nPlaylistView = getLayoutInflater().inflate(R.layout.dialog_new_playlist, null);
+        final EditText newPlaylistText = (EditText) nPlaylistView.findViewById(R.id.new_playlist_text);
+
+        final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(this)
+                .title(title)
+                .customView(nPlaylistView, true)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        _saveNewPlaylist(newPlaylistText.getText().toString(), (List<Music>) musics);
+                    }
+                })
+                .positiveText(R.string.OK);
+
+        final MaterialDialog md = dialogBuilder.build();
+
+        newPlaylistText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() != KeyEvent.ACTION_DOWN) {
+                    if (_saveNewPlaylist(newPlaylistText.getText().toString(), (List<Music>) musics)) {
+                        InputMethodManager imm = (InputMethodManager) MainActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        md.dismiss();
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+
+            }
+        });
+
+        return md;
+    }
+
+    private boolean _saveNewPlaylist(String name, List<Music> musics) {
+        switch (playlistRepo.addToNewPlaylist(name, musics)) {
+            case PlaylistRepo.ADDNEWPLALIST_NULL:
+                Toast.makeText(MainActivity.this, "Playlist name is required.", Toast.LENGTH_SHORT).show();
+                break;
+            case PlaylistRepo.ADDNEWPLALIST_EXIST:
+                Toast.makeText(MainActivity.this, "Playlist already exist.", Toast.LENGTH_SHORT).show();
+                break;
+            case PlaylistRepo.ADDNEWPLALIST_SUCCESS:
+                return true;
+        }
+        return false;
+    }
+
+    public MaterialDialog.Builder playlistSelectDialogMenu(final String title, final Collection<? extends Music> musics) {
+        List<Playlist> playlistList = playlistRepo.findUserPlaylist();
+        List<String> nameList = new ArrayList<>();
+        for (Playlist p : playlistList) {
+            nameList.add(p.getName());
+        }
+        CharSequence[] charSequenceItems = nameList.toArray(new CharSequence[nameList.size()]);
         return new MaterialDialog.Builder(this)
                 .title(title)
-                .items(R.array.files_menu_playlist)
+                .items(charSequenceItems)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        playlistRepo.addToPlaylist(text.toString(), (List<Music>) musics);
+                    }
+                });
+    }
+
+    public MaterialDialog.Builder playlistDialogMenu(final String title, final Collection<? extends Music> musics) {
+        int menuId = R.array.files_menu_playlist;
+        if (playlistRepo.findUserPlaylist().isEmpty()) {
+            menuId = R.array.files_menu_new_playlist;
+        }
+        MaterialDialog.Builder dBuilder = new MaterialDialog.Builder(this)
+                .title(title)
+                .items(menuId)
                 .itemsCallback(new MaterialDialog.ListCallback() {
                     @Override
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         switch (which) {
                             case 0:
-                                PlaylistRepo playlistRepo = new PlaylistRepo(((App) getApplication()).getRealm());
                                 playlistRepo.addToPlaylist((List<Music>) musics);
-                                //generate list
                                 playbackService.generateList();
                                 break;
                             case 1:
+                                newPlaylistDialog(title, musics).show();
                                 break;
                             case 2:
+                                playlistSelectDialogMenu(title, musics).show();
                                 break;
                         }
                     }
                 });
+
+        return dBuilder;
     }
 
     public MaterialDialog.Builder filesDialogMenu(final String title, final Collection<? extends Music> musics) {
@@ -289,7 +371,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
                         switch (which) {
                             case 0:
-                                PlaylistRepo playlistRepo = new PlaylistRepo(((App) getApplication()).getRealm());
                                 ((App) getApplication()).saveRegistry(App.REGISTRY.SONG_POSITION, "0");
                                 playlistRepo.saveMusicList((List<Music>) musics);
                                 NowPlayingFragment npf = new NowPlayingFragment();

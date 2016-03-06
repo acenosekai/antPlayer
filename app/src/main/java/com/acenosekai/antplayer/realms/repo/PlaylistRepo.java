@@ -18,9 +18,16 @@ import io.realm.Realm;
  */
 public class PlaylistRepo extends AntRepo {
     public static final String DEFAULT_PLAYLIST = "Current Playlist";
+    public static final int ADDNEWPLALIST_NULL = 1;
+    public static final int ADDNEWPLALIST_EXIST = 2;
+    public static final int ADDNEWPLALIST_SUCCESS = 0;
 
     public PlaylistRepo(Realm r) {
         super(r);
+    }
+
+    public List<Playlist> findUserPlaylist() {
+        return r.where(Playlist.class).equalTo("type", 1).findAll();
     }
 
     public Playlist getCurrentPlaylist() {
@@ -65,7 +72,6 @@ public class PlaylistRepo extends AntRepo {
     public void saveMusicListShuffle() {
         saveMusicListShuffle(DEFAULT_PLAYLIST);
     }
-
 
     public void saveMusicListShuffle(String name) {
         Playlist p = findPlaylistByName(name);
@@ -135,6 +141,24 @@ public class PlaylistRepo extends AntRepo {
         }
 
         return listMusic;
+    }
+
+    public int addToNewPlaylist(String name, List<Music> musicList) {
+        if (name == null || name.equals("")) {
+            return 1;
+        } else if (findPlaylistByName(name) != null) {
+            return 2;
+        } else {
+            r.beginTransaction();
+            Playlist p = new Playlist();
+            p.setName(name);
+            p.setType(1);
+            r.copyToRealmOrUpdate(p);
+            r.commitTransaction();
+            saveMusicList(name, musicList);
+            return 0;
+        }
+
     }
 
 }

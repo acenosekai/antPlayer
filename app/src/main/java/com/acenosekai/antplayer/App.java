@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.acenosekai.antplayer.realms.Playlist;
 import com.acenosekai.antplayer.realms.Registry;
+import com.acenosekai.antplayer.realms.repo.PlaylistRepo;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -33,9 +34,9 @@ public class App extends Application {
 
 
         realm.beginTransaction();
-        if (realm.where(Playlist.class).equalTo("name", "Current Playlist").findAll().isEmpty()) {
+        if (realm.where(Playlist.class).equalTo("name", PlaylistRepo.DEFAULT_PLAYLIST).findAll().isEmpty()) {
             Playlist p = new Playlist();
-            p.setName("Current Playlist");
+            p.setName(PlaylistRepo.DEFAULT_PLAYLIST);
             p.setType(0);
             realm.copyToRealmOrUpdate(p);
 

@@ -257,7 +257,30 @@ public class MainActivity extends AppCompatActivity {
         startService(playIntent);
     }
 
-    public MaterialDialog.Builder filesDialogMenu(String title, final Collection<? extends Music> musics) {
+    public MaterialDialog.Builder playlistDialogMenu(String title, final Collection<? extends Music> musics) {
+        return new MaterialDialog.Builder(this)
+                .title(title)
+                .items(R.array.files_menu_playlist)
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                PlaylistRepo playlistRepo = new PlaylistRepo(((App) getApplication()).getRealm());
+                                playlistRepo.addToPlaylist((List<Music>) musics);
+                                //generate list
+                                playbackService.generateList();
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                        }
+                    }
+                });
+    }
+
+    public MaterialDialog.Builder filesDialogMenu(final String title, final Collection<? extends Music> musics) {
         return new MaterialDialog.Builder(this)
                 .title(title)
                 .items(R.array.files_menu)
@@ -283,6 +306,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 break;
                             case 1:
+                                playlistDialogMenu(title, musics).show();
                                 break;
                         }
                     }
